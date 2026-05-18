@@ -4,7 +4,7 @@ DevSecOps CI/CD demo: automated dependency security scanning in GitHub Actions.
 
 ## Security scan
 
-The pipeline runs `npm run audit:ci` after `npm install`. See [docs/SECURITY.md](docs/SECURITY.md) for severity levels and how to reproduce pass/fail locally.
+The pipeline runs `npm run audit:ci` after `npm install`. If that step fails, later jobs in the workflow do not run (tests, build, etc.). See [docs/SECURITY.md](docs/SECURITY.md) for severity levels, setup issues we ran into, and how to reproduce pass/fail locally.
 
 ## Person 4 — Discord setup
 
