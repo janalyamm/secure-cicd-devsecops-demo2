@@ -1,17 +1,12 @@
-# Security scan screenshots
+# Docker health check screenshots
 
-## Trigger the failing pipeline
+This folder contains the screenshots used for the Person 3 Docker and health check demo.
 
-Open a pull request from `demo/security-fail` into `main`:
+## Files
 
-https://github.com/janalyamm/secure-cicd-devsecops-demo2/pull/new/demo/security-fail
+- [healthy_demo.png](healthy_demo.png): container health check passing.
+- [unhealthy_demo.png](unhealthy_demo.png): container health check failing.
 
-The PR workflow should fail on **Run Security Scan**.
+## Notes
 
-## Capture screenshots
-
-1. Open the failed GitHub Actions run on that PR.
-2. Expand the **Run Security Scan** step.
-3. Save a screenshot as `audit-fail.png` in this folder for the presentation deck.
-
-Optional: save a green **Run Security Scan** screenshot from a `main` branch run as `audit-pass.png`.
+The main project instructions and Docker demo commands are in the root [README.md](../../README.md).

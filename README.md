@@ -14,3 +14,55 @@ The pipeline runs `npm run audit:ci` after `npm install`. If that step fails, la
 4. Test: push the `demo/security-fail` branch or re-run a failed workflow; you should see an alert when any step fails.
 
 If the secret is not set, the pipeline still fails on security issues; the Discord step logs a skip message and does not block the failure signal.
+
+## Docker Health Check Demo
+
+This project uses a small educational Node.js HTTP server for the Docker demo. It is not a production app; it only gives the container a real endpoint for Docker health checks.
+
+### Build Image
+
+```bash
+docker build -t secure-cicd-demo .
+```
+
+### Run Healthy Container
+
+```bash
+docker run -d --name secure-cicd-demo -p 3000:3000 secure-cicd-demo
+sleep 15
+docker ps
+docker inspect --format='{{.State.Health.Status}}' secure-cicd-demo
+curl http://localhost:3000/health
+```
+
+Expected health result:
+
+```text
+healthy
+```
+
+### Demo Unhealthy Container
+
+Run the same image with a command that keeps the container alive but does not start the Node.js server:
+
+```bash
+docker rm -f secure-cicd-demo
+docker run -d --name secure-cicd-demo -p 3000:3000 secure-cicd-demo tail -f /dev/null
+sleep 40
+docker inspect --format='{{.State.Health.Status}}' secure-cicd-demo
+```
+
+After the health check retries finish, expected health result:
+
+```text
+unhealthy
+```
+
+### Cleanup
+
+```bash
+docker rm -f secure-cicd-demo
+```
+
+
+

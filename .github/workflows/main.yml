@@ -35,6 +35,30 @@ jobs:
       - name: Build Project
         run: npm run build
 
+      - name: Build Docker Image
+        run: docker build -t secure-cicd-demo .
+
+      - name: Run Docker Container
+        run: docker run -d --name secure-cicd-demo -p 3000:3000 secure-cicd-demo
+
+      - name: Verify Docker Health Check
+        run: |
+          for i in {1..10}; do
+            status=$(docker inspect --format='{{.State.Health.Status}}' secure-cicd-demo)
+            echo "Health status: $status"
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 3
+          done
+
+          docker logs secure-cicd-demo
+          exit 1
+
+      - name: Stop Docker Container
+        if: always()
+        run: docker rm -f secure-cicd-demo || true
+
       - name: Notify Discord on failure
         if: failure()
         continue-on-error: true
