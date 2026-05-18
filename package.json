@@ -5,6 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Tests passed successfully\"",
-    "build": "echo \"Build completed successfully\""
+    "build": "echo \"Build completed successfully\"",
+    "audit:ci": "npm audit --audit-level=high"
+  },
+  "dependencies": {
+    "lodash": "4.18.1"
   }
 }
