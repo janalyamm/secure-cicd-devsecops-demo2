@@ -1,17 +1,11 @@
-# Security scan screenshots
+# Pipeline screenshots
 
-## Trigger the failing pipeline
+These images are embedded in the root [README.md](../../README.md).
 
-Open a pull request from `demo/security-fail` into `main`:
+| File | Description |
+|------|-------------|
+| `pipeline-success-main.png` | Green workflow run on `main` |
+| `audit-fail-summary.png` | Failed PR from `demo/security-fail` |
+| `audit-fail.png` | Expanded **Run Security Scan** step with `lodash` advisories |
 
-https://github.com/janalyamm/secure-cicd-devsecops-demo2/pull/new/demo/security-fail
-
-The PR workflow should fail on **Run Security Scan**.
-
-## Capture screenshots
-
-1. Open the failed GitHub Actions run on that PR.
-2. Expand the **Run Security Scan** step.
-3. Save a screenshot as `audit-fail.png` in this folder for the presentation deck.
-
-Optional: save a green **Run Security Scan** screenshot from a `main` branch run as `audit-pass.png`.
+To re-capture: open PR from `demo/security-fail` to `main` for failure; push to `main` for success.
