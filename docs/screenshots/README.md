@@ -1,9 +1,24 @@
-# Security scan screenshots
+# Screenshots
 
-After pushing `demo/security-fail` and opening a PR to `main`:
+Images in this folder are embedded in the root [README.md](../../README.md).
 
-1. Open the failed GitHub Actions run.
-2. Expand the **Run Security Scan** step.
-3. Save a screenshot as `audit-fail.png` in this folder for the presentation deck.
+## Pipeline screenshots
 
-Optional: save a green **Run Security Scan** screenshot from `main` as `audit-pass.png`.
+| File | Description |
+|------|-------------|
+| `pipeline-success-main.png` | Green workflow run on `main` |
+| `audit-fail-summary.png` | Failed PR from `demo/security-fail` |
+| `audit-fail.png` | Expanded **Run Security Scan** step with `lodash` advisories |
+
+To re-capture: open PR from `demo/security-fail` to `main` for failure; push to `main` for success.
+
+## Docker health check screenshots
+
+Screenshots for the Person 3 Docker and health check demo.
+
+| File | Description |
+|------|-------------|
+| [healthy_demo.png](healthy_demo.png) | Container health check passing |
+| [unhealthy_demo.png](unhealthy_demo.png) | Container health check failing |
+
+Docker demo commands are in the root [README.md](../../README.md#docker-health-check-demo).

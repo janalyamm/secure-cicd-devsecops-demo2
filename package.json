@@ -4,6 +4,7 @@
   "description": "DevSecOps CI/CD demo project",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Tests passed successfully\"",
     "build": "echo \"Build completed successfully\"",
     "audit:ci": "npm audit --audit-level=high"
