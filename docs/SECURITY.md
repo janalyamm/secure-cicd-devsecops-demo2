@@ -6,6 +6,16 @@
 - The pipeline **fails** when npm reports **high** or **critical** vulnerabilities in dependencies.
 - Dependencies are pinned via `package-lock.json` so local and CI scans match.
 
+## Troubleshooting during setup
+
+During testing, the workflow initially passed even though we had added `npm audit` to CI. The reason was that the repo had no real dependencies and no `package-lock.json`, so `npm audit` had almost no installed dependency tree to scan. After running `npm install`, committing `package-lock.json`, and re-running locally, the audit step started giving consistent results in both local runs and GitHub Actions.
+
+We also hit a version mismatch with the project brief: `lodash@4.17.21` was supposed to be the “safe” baseline, but current npm advisories flagged it as high severity. We retested a few versions and settled on `4.18.1` for `main` (pass) and `4.17.11` on `demo/security-fail` (fail), so the success and failure demos stay reproducible.
+
+## Limitations
+
+`npm audit` is useful for dependency scanning, but it only covers known issues in the npm advisory database. Real production pipelines often combine it with other tools (for example Dependabot, Snyk, or container image scanning) to catch more classes of risk and reduce blind spots.
+
 ## Severity levels
 
 | Level    | Meaning |
@@ -48,4 +58,4 @@ Do not merge `demo/security-fail` into `main` before the presentation success ru
 
 1. **Shift left** — security checks run on every push/PR, not only before release.
 2. **Automated gate** — `npm audit` blocks the pipeline when risk is too high.
-3. **Fail closed** — deployment steps do not run after a failed security scan.
+3. **Fail closed** — if the security scan fails, the workflow stops before later stages (tests, build, Docker, or any deployment-related steps your teammates add).

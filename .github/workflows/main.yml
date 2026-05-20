@@ -35,6 +35,30 @@ jobs:
       - name: Build Project
         run: npm run build
 
+      - name: Build Docker Image
+        run: docker build -t secure-cicd-demo .
+
+      - name: Run Docker Container
+        run: docker run -d --name secure-cicd-demo -p 3000:3000 secure-cicd-demo
+
+      - name: Verify Docker Health Check
+        run: |
+          for i in {1..10}; do
+            status=$(docker inspect --format='{{.State.Health.Status}}' secure-cicd-demo)
+            echo "Health status: $status"
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 3
+          done
+
+          docker logs secure-cicd-demo
+          exit 1
+
+      - name: Stop Docker Container
+        if: always()
+        run: docker rm -f secure-cicd-demo || true
+
       - name: Notify Discord on failure
         if: failure()
         continue-on-error: true
@@ -53,3 +77,36 @@ jobs:
               "color": 15158332
             }]
           }' "$DISCORD_WEBHOOK_URL"
+
+      - name: Notify Telegram on failure
+        if: failure()
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set; skipping Telegram notify."
+            exit 0
+          fi
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          TEXT=$(cat <<EOF
+          <b>Pipeline Failure</b>
+
+          <b>Repo:</b> ${GITHUB_REPOSITORY}
+          <b>Branch:</b> ${GITHUB_REF_NAME}
+          <b>Workflow:</b> ${GITHUB_WORKFLOW}
+          <b>Trigger:</b> ${GITHUB_EVENT_NAME}
+          <b>Commit:</b> ${SHORT_SHA}
+          <b>Actor:</b> ${GITHUB_ACTOR}
+
+          <b>Cause:</b> a CI step failed (often: npm audit found high/critical vulnerability).
+
+          <a href="${RUN_URL}">View workflow run →</a>
+          EOF
+          )
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            --data "$(jq -n --arg chat "$TELEGRAM_CHAT_ID" --arg text "$TEXT" \
+              '{chat_id: ($chat|tonumber), text: $text, parse_mode: "HTML", disable_web_page_preview: true}')"
