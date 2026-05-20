@@ -92,25 +92,6 @@ jobs:
             --data "$(jq -n --arg chat "$TELEGRAM_CHAT_ID" --arg text "$TEXT" \
               '{chat_id: ($chat|tonumber), text: $text, parse_mode: "HTML", disable_web_page_preview: true}')"
 
-      - name: Notify Discord on failure
-        if: failure()
-        continue-on-error: true
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
-            echo "DISCORD_WEBHOOK_URL not set; skipping Discord notify."
-            exit 0
-          fi
-          curl -sS -H "Content-Type: application/json" -d '{
-            "content": "Pipeline failed in secure-cicd-devsecops-demo2",
-            "embeds": [{
-              "title": "Security / CI failure",
-              "description": "Check GitHub Actions. Common cause: npm audit found high or critical vulnerabilities.",
-              "color": 15158332
-            }]
-          }' "$DISCORD_WEBHOOK_URL"
-
       - name: Notify Telegram on failure
         if: failure()
         continue-on-error: true
