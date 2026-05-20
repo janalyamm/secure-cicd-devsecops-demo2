@@ -10,7 +10,7 @@ The pipeline runs `npm run audit:ci` after `npm install`. If that step fails, la
 
 ### Success scenario (`main`)
 
-Push to `main` with safe dependencies — pipeline passes, including the security scan.
+Push to `main` with safe dependencies — pipeline passes, including the security scan .
 
 ![Successful pipeline run on main](docs/screenshots/pipeline-success-main.png)
 
