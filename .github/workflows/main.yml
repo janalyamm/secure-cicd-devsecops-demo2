@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
+      - demo/security-success
 
   pull_request:
     branches:
       - main
+      - demo/security-success
 
 jobs:
   ci:
