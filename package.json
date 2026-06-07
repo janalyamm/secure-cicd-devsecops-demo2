@@ -10,6 +10,6 @@
     "audit:ci": "npm audit --audit-level=high"
   },
   "dependencies": {
-    "lodash": "4.18.1"
+    "lodash": "^4.17.11"
   }
 }
